@@ -1,0 +1,34 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-end;
+  margin: 12px;
+}
+
+.footer {
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  // justify-content: left;
+  // border-top: 1px;
+}
+
+.columnsDropdown {
+  max-height: 24px;
+  // padding: 4px;
+  margin-bottom: 6px;
+}
+
+.groupsDropdown {
+  max-height: 24px;
+  // padding: 4px;
+  margin-top: 6px;
+}
+
+.columnsDropdownMenuWrapper {
+ max-height: 24px; 
+}

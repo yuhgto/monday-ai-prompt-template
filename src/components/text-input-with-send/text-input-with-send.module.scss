@@ -1,0 +1,46 @@
+.inputContainer {
+  display: flex;
+  align-items: flex-end;
+  border-radius: var(--border-radius-medium);
+  border-color: #0073EA;
+  background: var(--primary-background-color);
+  margin-top: var(--spacing-small);
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+.input {
+  // font-style: normal;
+  font-weight: var(--font-weight-normal);
+  font-size: var(----font-size-30);
+  line-height: 22px;
+  color: var(--primary-text-color);
+  outline: none;
+  width: 100%;
+  height: auto;
+  padding: var(--spacing-small) 0 var(--spacing-small) var(--spacing-small);
+  box-sizing: border-box;
+  border: none;
+  resize: none;
+  &::placeholder {
+    color: var(--placeholder-color);
+  }
+}
+
+.sendButton {
+  background-color: var(--ai-color);
+  // TODO: make button background gradient
+  // background: linear-gradient(0deg, rgba(128, 128, 128, 0.28), rgba(128, 128, 128, 0.28)), linear-gradient(235.8deg, rgba(81, 213, 255, 0.79) 19.96%, rgba(75, 206, 253, 0.79) 22.58%, rgba(43, 167, 245, 0.79) 39.79%, rgba(19, 138, 239, 0.79) 71.58%, rgba(0, 115, 234, 0.79) 91.77%, rgba(5, 121, 235, 0.79) 91.77%);
+  margin: var(--spacing-xs);
+  border-radius: var(--border-radius-medium);
+}
+
+.loaderContainer {
+  height: 32px;
+  width: 32px;
+}
+
+.sendButtonWrapper {
+  margin: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) 0;
+  vertical-align: middle;
+}
