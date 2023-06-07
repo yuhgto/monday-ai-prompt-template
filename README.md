@@ -1,10 +1,10 @@
 # Before you begin
 
-This is a template app to help developers get started building for the monday AI Assistant. It's a preview, so things may not work as expected. We're 
+This is a template app to help developers get started building for the monday AI Assistant. It's a preview, so things may not work as expected. This code will eventually live in the [official monday example apps repo.](https://github.com/mondaycom/welcome-apps/)
 
 ## Join the monday AI hackathon
 
-monday and LabLab are collaborating on a hackathon to build new apps for the monday AI assistant.Learn more and sign up for the hackathon here: (monday AI assistant hackathon)[https://lablab.ai/event/monday-ai-app-hackathon]
+monday and LabLab are collaborating on a hackathon to build new apps for the monday AI assistant.Learn more and sign up for the hackathon here: [monday AI assistant hackathon](https://lablab.ai/event/monday-ai-app-hackathon)
 
 # About
 
