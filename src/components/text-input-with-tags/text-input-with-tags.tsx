@@ -34,6 +34,7 @@ type Props = { //TODO: move component types into its own file
   loading: boolean;
   success: boolean;
   error?: string;
+  className?: string;
 }
 
 type TagifyDropDownPosition = "manual" | "text" | "input" | "all";
@@ -53,7 +54,8 @@ const TextInputWithTagsAndSend = ({
   setMode,
   loading, 
   success,
-  error
+  error,
+  className
 }: Props): JSX.Element => {
   const [canRenderInput, setCanRenderInput] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(initialInput);
@@ -107,6 +109,7 @@ const TextInputWithTagsAndSend = ({
   
 
   return (
+    <div className={className}>
     <div className={classes.inputContainer}>
       <div className={classes.tagsContainer}>
       {canRenderInput && 
@@ -132,6 +135,7 @@ const TextInputWithTagsAndSend = ({
           wrapperClassName={classes.sendButtonWrapper}
           disabled={!canSendInput}
         />
+    </div>
     </div>
   )
 }

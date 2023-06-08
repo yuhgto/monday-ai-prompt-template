@@ -9,7 +9,7 @@ export default function useBoardGroups(context: AppContextType | undefined) {
     // fill second dropdown with groups from board
     useEffect(() => {
       if (!boardGroups && context) {
-        const board = context?.iframeContext?.boardId ?? [];
+        const board = context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [];
         getBoardGroups(board)
           .then((res: MondayApiResponse) => {
             if (!res.is_success) {

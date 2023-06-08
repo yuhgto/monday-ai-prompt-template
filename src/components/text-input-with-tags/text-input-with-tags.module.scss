@@ -8,6 +8,7 @@
   margin-top: var(--spacing-small);
   overflow: auto;
   flex-shrink: 0;
+  height: auto;
 }
 
 
@@ -32,6 +33,7 @@
 
 .tagsContainer {
   width: 76vw;
+  height: 100%;
 }
 
 .sendButton {

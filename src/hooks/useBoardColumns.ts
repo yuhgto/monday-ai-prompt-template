@@ -12,7 +12,7 @@ export default function useBoardColumns(context: AppContextType | undefined) {
   useEffect(() => {
     // debugger;
     if (!boardColumns && context) {
-      const board = context?.iframeContext?.boardId ?? [];
+      const board = context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [];
       getBoardColumns(board)
         .then((res: MondayApiResponse | undefined) => {
           if (res?.is_success) {

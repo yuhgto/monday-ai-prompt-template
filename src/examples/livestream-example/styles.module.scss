@@ -11,17 +11,19 @@
 
 .dropdownContainer {
   justify-content: flex-start;
+  margin-top: var(--spacing-small);
 }
 
-// .inputContainer {
-
-// }
+.inputContainer {
+  height: 177px;
+  display: flex;
+}
 
 .footer {
   font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 12px;
   align-items: center;
+  text-align: center;
   justify-content: flex-end;
-  border-top: solid 0.5px;
   margin-top: auto;
 }

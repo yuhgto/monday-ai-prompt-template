@@ -43,7 +43,7 @@ async function getItemsAndColumnValues(selectedGroup, context, columnIds) {
   {
     variables: {
       columnIds,
-      boardId: context?.iframeContext?.boardId ?? [],
+      boardId: context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [],
       groupId: selectedGroup,
     },
   }
@@ -92,6 +92,7 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
   const error = aiApiStatus.error;
   useSuccessMessage(success);
 
+  console.log(context);
   function handleColumnSelect(e: DropdownSelection) {
       setOutputColumn(e?.value);
     }
@@ -140,7 +141,7 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
               {
                 variables: {
                   column: outputColumn,
-                  boardId: context?.iframeContext?.boardId ?? [],
+                  boardId: context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [],
                   itemId: parseInt(result.item),
                   value: result.result,
                 },
@@ -172,9 +173,9 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
           size="small"
           />
         </div>
-      <div className={classes.inputContainer}>
       {canRenderInput && (
         <TextInputWithTagsAndSend
+          className={classes.inputContainer}
           onSend={handleSend}
           validTags={boardColumnsForTagsComponent ?? []}
           initialInput={initialInput}
@@ -185,7 +186,6 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
           error={error}
         />
       )}
-      </div>
       <div className={classes.footer}>
         <AiAppFooter />
       </div>
