@@ -2,17 +2,26 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: flex-end;
-  margin: 12px;
+  margin-top: 8px;
 }
 
+.dropdown {
+  padding: 4px;
+}
+
+.dropdownContainer {
+  justify-content: flex-start;
+}
+
+// .inputContainer {
+
+// }
+
 .footer {
-  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-  sans-serif;
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 12px;
-  display: flex;
-  flex-direction: row;
-  // justify-content: left;
-  // border-top: 1px;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: solid 0.5px;
+  margin-top: auto;
 }

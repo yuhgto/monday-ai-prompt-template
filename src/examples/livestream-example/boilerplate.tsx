@@ -96,6 +96,8 @@ const LivestreamExample = ({ initialInput = "" }: Props): JSX.Element => {
       setMode(Modes.response);
       console.log(`Event: Send button clicked. Input string:\n`, input);
 
+      // TODO: finish handleSend function
+
       setSuccess(!!success)
       setMode(Modes.request);
     },
@@ -105,16 +107,7 @@ const LivestreamExample = ({ initialInput = "" }: Props): JSX.Element => {
   return (
     <div className={classes.main}>
       <div className={classes.dropdownContainer}>
-        <SelectGroup 
-          groups={boardGroupsForDropdownComponent}
-          onChange={handleGroupSelect}
-        />
-        <SelectColumn
-          // className={classes.columnsDropdown}
-          columns={boardColumnsForDropdownComponent}
-          onChange={handleColumnSelect}
-          placeholder="Select a output column"
-        />
+        {/* TODO: Add dropdowns here */}
       </div>
       {canRenderInput && (
         <TextInputWithTagsAndSend

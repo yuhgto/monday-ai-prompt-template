@@ -1,4 +1,12 @@
 import { useState, useCallback, useContext, useMemo } from "react";
+import dynamic from "next/dynamic";
+
+const Dropdown = dynamic(
+  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
+  {
+    ssr: false,
+  }
+);
 
 import { AppContext } from "@/components/context-provider/app-context-provider";
 import TextInputWithTagsAndSend from "@/components/text-input-with-tags/text-input-with-tags";
@@ -60,6 +68,8 @@ function getColumnIdsFromInputTags(input: string) {
 }
 
 const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
+  const [isDropdownLoaded, setIsDropdownLoaded] = useState<boolean>(false);
+
   const context = useContext(AppContext);
   const [mode, setMode] = useState<Modes>(Modes.request);
   const sessionToken = context?.sessionToken ?? "";
@@ -72,9 +82,10 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
   const boardColumns = useBoardColumns(context);
   const boardColumnsForTagsComponent = mapBoardColumnsToTagsOptions(boardColumns);
   const boardColumnsForDropdownComponent = mapBoardColumnsToDropdownOptions(boardColumns);
+  const canRenderInput = !!boardColumnsForTagsComponent;
+
   const boardGroups = useBoardGroups(context);
   const boardGroupsForDropdownComponent = mapBoardGroupsToDropdownOptions(boardGroups) ?? [];
-  const canRenderInput = !!boardColumnsForTagsComponent;
   
   const [success, setSuccess] = useState<boolean>(false);
   const loading = aiApiStatus.loading || mode == Modes.response;
@@ -147,17 +158,21 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
 
   return (
     <div className={classes.main}>
-      <div className={classes.dropdownContainer}>
-        <SelectGroup 
-          groups={boardGroupsForDropdownComponent}
+        <div className={classes.dropdownContainer}>
+        <Dropdown
+          options={boardGroupsForDropdownComponent}
           onChange={handleGroupSelect}
+          placeholder="Select a group"
+          size="small"
         />
-        <SelectColumn
-          columns={boardColumnsForDropdownComponent}
+        <Dropdown
+          options={boardColumnsForDropdownComponent}
           onChange={handleColumnSelect}
-          placeholder="Select a output column"
-        />
-      </div>
+          placeholder={"Select an output column"}
+          size="small"
+          />
+        </div>
+      <div className={classes.inputContainer}>
       {canRenderInput && (
         <TextInputWithTagsAndSend
           onSend={handleSend}
@@ -170,6 +185,7 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
           error={error}
         />
       )}
+      </div>
       <div className={classes.footer}>
         <AiAppFooter />
       </div>

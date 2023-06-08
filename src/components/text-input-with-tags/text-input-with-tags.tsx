@@ -118,9 +118,9 @@ const TextInputWithTagsAndSend = ({
         onInvalid={onInvalidTag}
         defaultValue={initialInput}
       />}
+      </div>
       <div className={classes.loaderContainer}>
       {(mode===Modes.response) ? <Loader size={24}/> : null}
-      </div>
       </div>
       <IconButton
           ariaLabel="Send"
