@@ -52,9 +52,9 @@ export function mapBoardColumnsToTagsOptions(
 
 /**
  * Converts the array emitted by the useBoardColumns hook into
- * a format compatible with the dropdown component
+ * a format compatible with the dropdown component. 
  * @param columns An array of board columns
- * @returns 
+ * @returns An array of text columns compatible with the dropdown component
  */
 export function mapBoardColumnsToDropdownOptions(
   columns: { id: string; type: string; title: string }[] | undefined
@@ -63,7 +63,7 @@ export function mapBoardColumnsToDropdownOptions(
     filtered: Record<string, any>[],
     column: Record<string, any>
   ) {
-    if (column.type === "text") {
+    if (column.type === "text" || column.type === "long-text") {
       filtered.push({
         label: column.title,
         value: column.id,
