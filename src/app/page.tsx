@@ -7,13 +7,15 @@ import PromptWithColumnMapping from '@/examples/prompt-with-column-mapping/promp
 import LivestreamExampleFinal from '@/examples/livestream-example/final-code';
 import LivestreamExample from '@/examples/livestream-example/boilerplate';
 import AiAppFooter from '@/components/ai-footer/ai-footer';
+import ContextExplorerExample from '@/examples/context-explorer/context-explorer-example'
 
 export default function Home() {
   return (
     <div className={styles.App}>
     <AppContextProvider>
-      <LivestreamExampleFinal />
-      {/* <LivestreamExample /> */}
+      <ContextExplorerExample />
+      {/* <LivestreamExampleFinal /> */}
+      {/* <BasePromptLayout /> */}
     </AppContextProvider>
     </div>
   )
