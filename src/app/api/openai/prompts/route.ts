@@ -9,7 +9,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 
-async function isAuthorized(request: NextRequest) {
+function isAuthorized(request: NextRequest) {
   try {
     const authorizationToken: string  = request?.headers.get('Authorization') ?? '';
     const clientSecret: string = process.env.CLIENT_SECRET ?? '';
