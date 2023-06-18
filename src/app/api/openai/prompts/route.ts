@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken"
-import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from 'openai'
+
+// Uncomment this if you get a StaticGenBailoutError from NextJS
+export const dynamic = 'force-static'
+
+// Set this to true if you're using localhost and having authentication issues
+const DISABLE_AUTH = false;
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,6 +19,8 @@ function isAuthorized(request: NextRequest) {
   try {
     const authorizationToken: string  = request?.headers.get('Authorization') ?? '';
     const clientSecret: string = process.env.CLIENT_SECRET ?? '';
+    console.log('client-secret', clientSecret);
+    console.log('authorizationToken', authorizationToken);
     const payload = jwt.verify(authorizationToken, clientSecret);
     if (payload) {
       return true;
@@ -31,7 +39,7 @@ async function getCompletionsFromOpenAi(prompts:string | string[], n: number) {
       prompt: prompts,
       n,
     }
-    console.log(payload);
+    console.log(`event - calling OpenAI API:\n`, JSON.stringify(payload, null,2));
   const completionsFromApi = await openai
       .createCompletion(payload)
     return completionsFromApi.data.choices;
@@ -43,11 +51,18 @@ async function getCompletionsFromOpenAi(prompts:string | string[], n: number) {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const reqJson = await req.json();
-  console.log(`A request was made. \nRequest:${JSON.stringify(reqJson)}`)
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ message: "Not authorized", success: false }, 
-      {status:401});
-  } else if (!reqJson.items) {
+  console.log(`event - request was received:\n${JSON.stringify(reqJson, null, 2)}`)
+  if (!DISABLE_AUTH) {
+    if (!isAuthorized(req)) {
+        return NextResponse.json(
+          { message: "Not authorized", success: false }, 
+          {status:401}
+        );
+      } 
+  } else {
+    console.log('warning - skipping authentication step. To enable authentication, set DISABLE_AUTH to false.')
+  }
+  if (!reqJson.items) {
     return NextResponse.json({'message': 'No items array supplied'}, {
       status: 400,
     })
