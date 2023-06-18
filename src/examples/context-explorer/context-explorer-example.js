@@ -72,8 +72,205 @@ function addControllerButtons(context) {
         ],
       },
     });
-    const textBlockContent = textBlockObject("content to insert").content;
+    const firstFocusedBlockId = context?.focusedBlocks?.[0].id;
+    const appFeatureAiDocTopBarButtons = () => {
+        addControl(
+            <button key="addMultiBlocks"
+                    onClick={() => {
+                        monday
+                            .execute("addMultiBlocks", {
+                                blocks: [
+                                    textBlockObject("Text to insert after last focused block"),
+                                ],
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                addMultiBlocks
+            </button>
+        );
+    }
+    const appFeatureAiDocQuickStartButtons = () =>     {
+        addControl(
+            <button key="AppFeatureAiDocQuickStart"
+                    onClick={() => {
+                        monday
+                            .execute("addMultiBlocks", {
+                                blocks: [
+                                    textBlockObject("This will be added to a new empty doc"),
+                                ],
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                addMultiBlocks
+            </button>
+        );
 
+        addControl(
+            <button key="addMultiBlocksUndo"
+                    onClick={() => {
+                        monday
+                            .execute("addMultiBlocks", {
+                                blocks: [
+                                    textBlockObject("Text to insert after specific block"),
+                                ],
+                                successNoticeMsg: 'Text added ',
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                addMultiBlocks(With undo)
+            </button>
+        );
+
+        const html = `${appFeatureType} <h1>Marketing Brief</h1>\n<h2>Campaign purpose</h2>\n<span>List a purpose</span></html> ${Date.now().toString()}`;
+
+        addControl(
+            <button key="addMultiBlocksFromHtml"
+                    onClick={() => {
+                        monday
+                            .execute("addMultiBlocksFromHtml", { html: html })
+                            .then((res) => {});
+                    }}
+            >
+                addMultiBlocksFromHtml
+            </button>
+        );
+
+    }
+    const appFeatureAiDocContextualMenuButtons = () =>  {
+        // example for getting the first focused block id
+
+
+        addControl(
+            <button key="addMultiBlocks"
+                    onClick={() => {
+                        monday
+                            .execute("addMultiBlocks", {
+                                blocks: [
+                                    textBlockObject("Text to insert after specific block"),
+                                ],
+                                afterBlockId: firstFocusedBlockId,
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                addMultiBlocks
+            </button>
+        );
+
+        addControl(
+            <button key="updateDocBlock"
+                    onClick={() => {
+                        const textBlockContent = textBlockObject("content to insert").content;
+                        monday
+                            .execute("", {
+                                blockId: firstFocusedBlockId,
+                                content: textBlockContent,
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                updateDocBlock
+            </button>
+        );
+
+        addControl(
+            <button key="openAppOnFirstTextualSelectedBlock"
+                    onClick={() => {
+                        monday
+                            .execute("openAppOnFirstTextualSelectedBlock")
+                            .then((res) => {});
+                    }}
+            >
+                openAppOnFirstTextualSelectedBlock
+            </button>
+        );
+
+        addControl(
+            <button key="moveToNextSelectedTextualBlock"
+                    onClick={() => {
+                        monday
+                            .execute("moveToNextSelectedTextualBlock")
+                            .then((res) => {});
+                    }}
+            >
+                moveToNextSelectedTextualBlock
+            </button>
+        );
+
+        addControl(
+            <button key="moveToPrevSelectedTextualBlock"
+                    onClick={() => {
+                        monday
+                            .execute("moveToPrevSelectedTextualBlock")
+                            .then((res) => {});
+                    }}
+            >
+                moveToPrevSelectedTextualBlock
+            </button>
+        );
+
+        addControl(
+            <button key="replaceHighlightText"
+                    onClick={() => {
+                        monday
+                            .execute("replaceHighlightText", {
+                                text: "Replace Highlight Text",
+                            })
+                            .then((res) => {});
+                    }}
+            >
+                replaceHighlightText
+            </button>
+        );
+    }
+    const appFeatureAiDocSlashCommandButtons = () => {
+        {
+            addControl(
+                <button key="addMultiBlocks"
+                        onClick={() => {
+                            monday
+                                .execute("addMultiBlocks", {
+                                    blocks: [
+                                        textBlockObject("Text to insert after specific block"),
+                                    ],
+                                    afterBlockId: firstFocusedBlockId,
+                                })
+                                .then((res) => {});
+                        }}
+                >
+                    addMultiBlocks
+                </button>
+            );
+
+            addControl(
+                <button key="moveToNextSelectedTextualBlock"
+                        onClick={() => {
+                            monday
+                                .execute("moveToNextSelectedTextualBlock")
+                                .then((res) => {});
+                        }}
+                >
+                    moveToNextSelectedTextualBlock
+                </button>
+            );
+
+            addControl(
+                <button key="moveToPrevSelectedTextualBlock"
+                        onClick={() => {
+                            monday
+                                .execute("moveToPrevSelectedTextualBlock")
+                                .then((res) => {});
+                        }}
+                >
+                    moveToPrevSelectedTextualBlock
+                </button>
+            );
+
+        }
+    }
   switch (appFeatureType) {
     case "AppFeatureAiBoardMainMenuHeader":
       break;
@@ -91,150 +288,16 @@ function addControllerButtons(context) {
       );
       break;
     case "AppFeatureAiDocTopBar":
-      {
-        addControl(
-          <button key="addMultiBlocks"
-            onClick={() => {
-              monday
-                .execute("addMultiBlocks", {
-                  blocks: [
-                    textBlockObject("Text to insert after last focused block"),
-                  ],
-                })
-                .then((res) => {});
-            }}
-          >
-            addMultiBlocks
-          </button>
-        );
-      }
+      appFeatureAiDocTopBarButtons()
       break;
     case "AppFeatureAiDocQuickStart":
-      {
-        addControl(
-          <button key="AppFeatureAiDocQuickStart"
-            onClick={() => {
-              monday
-                .execute("addMultiBlocks", {
-                  blocks: [
-                    textBlockObject("This will be added to a new empty doc"),
-                  ],
-                })
-                .then((res) => {});
-            }}
-          >
-            addMultiBlocks
-          </button>
-        );
-
-        const html = `${appFeatureType} <h1>Marketing Brief</h1>\n<h2>Campaign purpose</h2>\n<span>List a purpose</span></html> ${Date.now().toString()}`;
-
-        addControl(
-          <button key="addMultiBlocksFromHtml"
-            onClick={() => {
-              monday
-                .execute("addMultiBlocksFromHtml", { html: html })
-                .then((res) => {});
-            }}
-          >
-            addMultiBlocksFromHtml
-          </button>
-        );
-      }
+      appFeatureAiDocQuickStartButtons();
       break;
     case "AppFeatureAiDocContextualMenu":
-      {
-        // example for getting the first focused block id
-        const firstFocusedBlockId = context.focusedBlocks[0].id;
-
-        addControl(
-          <button key="addMultiBlocks"
-            onClick={() => {
-              monday
-                .execute("addMultiBlocks", {
-                  blocks: [
-                    textBlockObject("Text to insert after specific block"),
-                  ],
-                  afterBlockId: firstFocusedBlockId,
-                })
-                .then((res) => {});
-            }}
-          >
-            addMultiBlocks
-          </button>
-        );
-
-        addControl(
-          <button key="updateDocBlock"
-            onClick={() => {
-              monday
-                .execute("updateDocBlock", {
-                  blockId: firstFocusedBlockId,
-                  content: textBlockContent,
-                })
-                .then((res) => {});
-            }}
-          >
-            updateDocBlock
-          </button>
-        );
-
-        addControl(
-          <button key="openAppOnFirstTextualSelectedBlock"
-            onClick={() => {
-              monday
-                .execute("openAppOnFirstTextualSelectedBlock")
-                .then((res) => {});
-            }}
-          >
-            openAppOnFirstTextualSelectedBlock
-          </button>
-        );
-      }
+        appFeatureAiDocContextualMenuButtons();
       break;
     case "AppFeatureAiDocSlashCommand":
-      {
-        addControl(
-          <button key="addMultiBlocks"
-            onClick={() => {
-              monday
-                .execute("addMultiBlocks", {
-                  blocks: [
-                    textBlockObject("Text to insert after specific block"),
-                  ],
-                  afterBlockId: firstFocusedBlockId,
-                })
-                .then((res) => {});
-            }}
-          >
-            addMultiBlocks
-          </button>
-        );
-
-        addControl(
-          <button key="moveToNextSelectedTextualBlock"
-            onClick={() => {
-              monday
-                .execute("moveToNextSelectedTextualBlock")
-                .then((res) => {});
-            }}
-          >
-            moveToNextSelectedTextualBlock
-          </button>
-        );
-
-        addControl(
-          <button key="moveToPrevSelectedTextualBlock"
-            onClick={() => {
-              monday
-                .execute("moveToPrevSelectedTextualBlock")
-                .then((res) => {});
-            }}
-          >
-            moveToPrevSelectedTextualBlock
-          </button>
-        );
-      }
+        appFeatureAiDocSlashCommandButtons();
       break;
   }
 }
