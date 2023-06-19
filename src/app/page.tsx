@@ -9,6 +9,7 @@ import LivestreamExampleFinal from '@/examples/livestream-example/final-code';
 import LivestreamExample from '@/examples/livestream-example/boilerplate';
 import AiAppFooter from '@/components/ai-footer/ai-footer';
 import ContextExplorerExample from '@/examples/context-explorer/context-explorer-example'
+import { Button } from "monday-ui-react-core";
 
 export default function Home() {
   const  [displayedApp, setAppToDisplay] = useState('');
@@ -35,13 +36,13 @@ export default function Home() {
                 </thead>
                 <tbody>
                 <tr>
-                  <td><button onClick={() => renderExampleApp('ContextExplorerExample')}>Context Explorer Example</button></td>
+                  <td><Button onClick={() => renderExampleApp('ContextExplorerExample')}>Context Explorer Example</Button></td>
                 </tr>
                 <tr>
-                  <td><button onClick={() => renderExampleApp('LivestreamExample')}>Livestream Example</button></td>
+                  <td><Button onClick={() => renderExampleApp('LivestreamExample')}>Livestream Example</Button></td>
                 </tr>
                 <tr>
-                  <td><button onClick={() => renderExampleApp('BasePromptLayout')}>Base Prompt Layout</button></td>
+                  <td><Button onClick={() => renderExampleApp('BasePromptLayout')}>Base Prompt Layout</Button></td>
                 </tr>
                 </tbody>
               </table>
@@ -62,4 +63,5 @@ export default function Home() {
       </div>
   )
 }
+
 
