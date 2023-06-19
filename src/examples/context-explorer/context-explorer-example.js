@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import mondaySdk from "monday-sdk-js";
 import "monday-ui-react-core/dist/main.css";
 import "./context-explorer-example.css";
+import { Button, Flex } from "monday-ui-react-core";
 //Explore more Monday React Components here: https://style.monday.com/
-import AttentionBox from "monday-ui-react-core/dist/AttentionBox.js";
 
 // Usage of mondaySDK example, for more information visit here: https://developer.monday.com/apps/docs/introduction-to-the-sdk/
 const monday = mondaySdk();
@@ -17,13 +17,12 @@ function addControllerButtons(context) {
   }
   function addApiButton() {
     return addControl(
-      <button key="api-call"
+      <Button size={Button.sizes.XS} key="api-call"
         onClick={() => {
           monday
             .api(`query { me { name } }`)
             .then((res) => {
               console.log("api:", res);
-              debugger;
               monday.execute("notice", {
                 message: res?.data?.me?.name,
                 type: "success", // or "error" (red), or "info" (blue)
@@ -32,8 +31,7 @@ function addControllerButtons(context) {
             })
             .catch((err) => {
               monday.execute("notice", {
-                message:
-                  "Add OAuth scopes me:Read to your app at the developer center",
+                  message:err?.data?.errors?.map(e => e.message).join(', '),
                 type: "error", // or "error" (red), or "info" (blue)
                 timeout: 10000,
               });
@@ -41,7 +39,7 @@ function addControllerButtons(context) {
         }}
       >
         API call
-      </button>
+      </Button>
     );
   }
 
@@ -52,13 +50,13 @@ function addControllerButtons(context) {
   addTitle();
   addApiButton();
   addControl(
-    <button key="closeDialog"
+     <Button size={Button.sizes.XS} key="closeDialog"
       onClick={() => {
         monday.execute("closeDialog", {});
       }}
     >
       Close dialog
-    </button>
+    </Button>
   );
   if (context) {
     const { type: appFeatureType, name: appFeatureName } = context?.appFeature;
@@ -73,26 +71,104 @@ function addControllerButtons(context) {
       },
     });
     const firstFocusedBlockId = context?.focusedBlocks?.[0].id;
-    const appFeatureAiDocTopBarButtons = () => {
-        addControl(
-            <button key="addMultiBlocks"
-                    onClick={() => {
-                        monday
-                            .execute("addMultiBlocks", {
-                                blocks: [
-                                    textBlockObject("Text to insert after last focused block"),
-                                ],
-                            })
-                            .then((res) => {});
-                    }}
-            >
-                addMultiBlocks
-            </button>
-        );
+
+    const workspaceId = context?.workspaceId;
+      addControl(
+           <Button size={Button.sizes.XS} key="api-call"
+                  onClick={() => {
+                      monday
+                          .api(`{
+  docs(workspace_ids: [${workspaceId}]) {
+    id
+    name
+    blocks {
+      created_at
+      content
     }
-    const appFeatureAiDocQuickStartButtons = () =>     {
+  }
+}`)
+                          .then((res) => {
+                              console.log("get all workspace docs via API:", res);
+                              monday.execute("notice", {
+                                  message: 'check the browser console',
+                                  type: "success", // or "error" (red), or "info" (blue)
+                                  timeout: 10000,
+                              });
+                          })
+                          .catch((err) => {
+                              monday.execute("notice", {
+                                  message:err?.data?.errors?.map(e => e.message).join(', '),
+                                  type: "error", // or "error" (red), or "info" (blue)
+                                  timeout: 10000,
+                              });
+                          });
+                  }}
+          >
+              API get all workspace docs
+          </Button>
+      );
+
+      const docId = context?.docId;
+      addControl(
+           <Button size={Button.sizes.XS} key="api-call"
+                  onClick={() => {
+                      const textBlockContent = textBlockObject("content to insert").content;
+                      monday
+                          .api(`mutation {
+  create_doc_block(doc_id: ${docId}, type: normal_text, content: "${JSON.stringify(textBlockContent).replaceAll('"','\\"')}") {
+    id,
+    content
+  }
+}`)
+                          .then((res) => {
+                              console.log("Inserted block via API:", res);
+                              monday.execute("notice", {
+                                  message: 'check the browser console',
+                                  type: "success", // or "error" (red), or "info" (blue)
+                                  timeout: 10000,
+                              });
+                          })
+                          .catch((err) => {
+                              monday.execute("notice", {
+                                  message:err?.data?.errors?.map(e => e.message).join(', '),
+                                  type: "error", // or "error" (red), or "info" (blue)
+                                  timeout: 10000,
+                              });
+                          });
+                  }}
+          >
+              API add block to doc
+          </Button>
+      );
+
+      const checkIfDocMethodSupported = (methodName) => {
+          if (context?.additionalSdkMethodsList?.includes(methodName)) return true
+          return false
+      }
+    const appFeatureAiDocTopBarButtons = () => {
+        if (checkIfDocMethodSupported("addMultiBlocks")) {
+            addControl(
+                 <Button size={Button.sizes.XS} key="addMultiBlocks"
+                        onClick={() => {
+                            monday
+                                .execute("addMultiBlocks", {
+                                    blocks: [
+                                        textBlockObject("Text to insert after last focused block"),
+                                    ],
+                                })
+                                .then((res) => {});
+                        }}
+                >
+                    addMultiBlocks
+                </Button>
+            );
+
+        }
+    }
+    const appFeatureAiDocQuickStartButtons = () => {
+        if (checkIfDocMethodSupported("AppFeatureAiDocQuickStart")) {
         addControl(
-            <button key="AppFeatureAiDocQuickStart"
+             <Button size={Button.sizes.XS} key="AppFeatureAiDocQuickStart"
                     onClick={() => {
                         monday
                             .execute("addMultiBlocks", {
@@ -100,136 +176,59 @@ function addControllerButtons(context) {
                                     textBlockObject("This will be added to a new empty doc"),
                                 ],
                             })
-                            .then((res) => {});
+                            .then((res) => {
+                            });
                     }}
             >
                 addMultiBlocks
-            </button>
+            </Button>
         );
+    }
 
-        addControl(
-            <button key="addMultiBlocksUndo"
-                    onClick={() => {
-                        monday
-                            .execute("addMultiBlocks", {
-                                blocks: [
-                                    textBlockObject("Text to insert after specific block"),
-                                ],
-                                successNoticeMsg: 'Text added ',
-                            })
-                            .then((res) => {});
-                    }}
-            >
-                addMultiBlocks(With undo)
-            </button>
-        );
+        if (checkIfDocMethodSupported("addMultiBlocks")) {
+            addControl(
+                 <Button size={Button.sizes.XS} key="addMultiBlocksUndo"
+                        onClick={() => {
+                            monday
+                                .execute("addMultiBlocks", {
+                                    blocks: [
+                                        textBlockObject("Text to insert after specific block"),
+                                    ],
+                                    successNoticeMsg: 'Text added ',
+                                })
+                                .then((res) => {
+                                });
+                        }}
+                >
+                    addMultiBlocks(With undo)
+                </Button>
+            );
+        }
 
         const html = `${appFeatureType} <h1>Marketing Brief</h1>\n<h2>Campaign purpose</h2>\n<span>List a purpose</span></html> ${Date.now().toString()}`;
 
-        addControl(
-            <button key="addMultiBlocksFromHtml"
-                    onClick={() => {
-                        monday
-                            .execute("addMultiBlocksFromHtml", { html: html })
-                            .then((res) => {});
-                    }}
-            >
-                addMultiBlocksFromHtml
-            </button>
-        );
-
+        if (checkIfDocMethodSupported("addMultiBlocksFromHtml")) {
+            addControl(
+                 <Button size={Button.sizes.XS} key="addMultiBlocksFromHtml"
+                        onClick={() => {
+                            monday
+                                .execute("addMultiBlocksFromHtml", {html: html})
+                                .then((res) => {
+                                });
+                        }}
+                >
+                    addMultiBlocksFromHtml
+                </Button>
+            );
+        }
     }
     const appFeatureAiDocContextualMenuButtons = () =>  {
         // example for getting the first focused block id
 
 
-        addControl(
-            <button key="addMultiBlocks"
-                    onClick={() => {
-                        monday
-                            .execute("addMultiBlocks", {
-                                blocks: [
-                                    textBlockObject("Text to insert after specific block"),
-                                ],
-                                afterBlockId: firstFocusedBlockId,
-                            })
-                            .then((res) => {});
-                    }}
-            >
-                addMultiBlocks
-            </button>
-        );
-
-        addControl(
-            <button key="updateDocBlock"
-                    onClick={() => {
-                        const textBlockContent = textBlockObject("content to insert").content;
-                        monday
-                            .execute("", {
-                                blockId: firstFocusedBlockId,
-                                content: textBlockContent,
-                            })
-                            .then((res) => {});
-                    }}
-            >
-                updateDocBlock
-            </button>
-        );
-
-        addControl(
-            <button key="openAppOnFirstTextualSelectedBlock"
-                    onClick={() => {
-                        monday
-                            .execute("openAppOnFirstTextualSelectedBlock")
-                            .then((res) => {});
-                    }}
-            >
-                openAppOnFirstTextualSelectedBlock
-            </button>
-        );
-
-        addControl(
-            <button key="moveToNextSelectedTextualBlock"
-                    onClick={() => {
-                        monday
-                            .execute("moveToNextSelectedTextualBlock")
-                            .then((res) => {});
-                    }}
-            >
-                moveToNextSelectedTextualBlock
-            </button>
-        );
-
-        addControl(
-            <button key="moveToPrevSelectedTextualBlock"
-                    onClick={() => {
-                        monday
-                            .execute("moveToPrevSelectedTextualBlock")
-                            .then((res) => {});
-                    }}
-            >
-                moveToPrevSelectedTextualBlock
-            </button>
-        );
-
-        addControl(
-            <button key="replaceHighlightText"
-                    onClick={() => {
-                        monday
-                            .execute("replaceHighlightText", {
-                                text: "Replace Highlight Text",
-                            })
-                            .then((res) => {});
-                    }}
-            >
-                replaceHighlightText
-            </button>
-        );
-    }
-    const appFeatureAiDocSlashCommandButtons = () => {
-        {
+        if (checkIfDocMethodSupported("addMultiBlocks")) {
             addControl(
-                <button key="addMultiBlocks"
+                 <Button size={Button.sizes.XS} key="addMultiBlocks"
                         onClick={() => {
                             monday
                                 .execute("addMultiBlocks", {
@@ -238,37 +237,140 @@ function addControllerButtons(context) {
                                     ],
                                     afterBlockId: firstFocusedBlockId,
                                 })
-                                .then((res) => {});
+                                .then((res) => {
+                                });
                         }}
                 >
                     addMultiBlocks
-                </button>
+                </Button>
             );
-
+        }
+        if (checkIfDocMethodSupported("updateDocBlock")) {
             addControl(
-                <button key="moveToNextSelectedTextualBlock"
+                 <Button size={Button.sizes.XS} key="updateDocBlock"
+                        onClick={() => {
+                            const textBlockContent = textBlockObject("content to insert").content;
+                            monday
+                                .execute("updateDocBlock", {
+                                    id: firstFocusedBlockId,
+                                    content: textBlockContent,
+                                })
+                                .then((res) => {
+                                });
+                        }}
+                >
+                    updateDocBlock
+                </Button>
+            );
+        }
+        if (checkIfDocMethodSupported("openAppOnFirstTextualSelectedBlock")) {
+            addControl(
+                 <Button size={Button.sizes.XS} key="openAppOnFirstTextualSelectedBlock"
+                        onClick={() => {
+                            monday
+                                .execute("openAppOnFirstTextualSelectedBlock")
+                                .then((res) => {
+                                });
+                        }}
+                >
+                    openAppOnFirstTextualSelectedBlock
+                </Button>
+            );
+        }
+        if (checkIfDocMethodSupported("moveToNextSelectedTextualBlock")) {
+            addControl(
+                 <Button size={Button.sizes.XS} key="moveToNextSelectedTextualBlock"
                         onClick={() => {
                             monday
                                 .execute("moveToNextSelectedTextualBlock")
-                                .then((res) => {});
+                                .then((res) => {
+                                });
                         }}
                 >
                     moveToNextSelectedTextualBlock
-                </button>
+                </Button>
             );
-
+        }
+        if (checkIfDocMethodSupported("moveToPrevSelectedTextualBlock")) {
             addControl(
-                <button key="moveToPrevSelectedTextualBlock"
+                 <Button size={Button.sizes.XS} key="moveToPrevSelectedTextualBlock"
                         onClick={() => {
                             monday
                                 .execute("moveToPrevSelectedTextualBlock")
-                                .then((res) => {});
+                                .then((res) => {
+                                });
                         }}
                 >
                     moveToPrevSelectedTextualBlock
-                </button>
+                </Button>
             );
-
+        }
+        if (checkIfDocMethodSupported("replaceHighlightText")) {
+            addControl(
+                <Button size={Button.sizes.XS} key="replaceHighlightText"
+                        onClick={() => {
+                            monday
+                                .execute("replaceHighlightText", {
+                                    text: "Replace Highlight Text",
+                                })
+                                .then((res) => {
+                                });
+                        }}
+                >
+                    replaceHighlightText
+                </Button>
+            );
+        }
+    }
+    const appFeatureAiDocSlashCommandButtons = () => {
+        {
+            if (checkIfDocMethodSupported("addMultiBlocks")) {
+                addControl(
+                     <Button size={Button.sizes.XS} key="addMultiBlocks"
+                            onClick={() => {
+                                monday
+                                    .execute("addMultiBlocks", {
+                                        blocks: [
+                                            textBlockObject("Text to insert after specific block"),
+                                        ],
+                                        afterBlockId: firstFocusedBlockId,
+                                    })
+                                    .then((res) => {
+                                    });
+                            }}
+                    >
+                        addMultiBlocks
+                    </Button>
+                );
+            }
+            if (checkIfDocMethodSupported("moveToNextSelectedTextualBlock")) {
+                addControl(
+                     <Button size={Button.sizes.XS} key="moveToNextSelectedTextualBlock"
+                            onClick={() => {
+                                monday
+                                    .execute("moveToNextSelectedTextualBlock")
+                                    .then((res) => {
+                                    });
+                            }}
+                    >
+                        moveToNextSelectedTextualBlock
+                    </Button>
+                );
+            }
+            if (checkIfDocMethodSupported("moveToPrevSelectedTextualBlock")) {
+                addControl(
+                     <Button size={Button.sizes.XS} key="moveToPrevSelectedTextualBlock"
+                            onClick={() => {
+                                monday
+                                    .execute("moveToPrevSelectedTextualBlock")
+                                    .then((res) => {
+                                    });
+                            }}
+                    >
+                        moveToPrevSelectedTextualBlock
+                    </Button>
+                );
+            }
         }
     }
   switch (appFeatureType) {
@@ -276,7 +378,7 @@ function addControllerButtons(context) {
       break;
     case "AppFeatureAiItemUpdateActions":
       addControl(
-        <button key="updatePostContentAction"
+         <Button size={Button.sizes.XS} key="updatePostContentAction"
           onClick={() => {
             monday.execute("updatePostContentAction", {
               suggestedRephrase: "<u>Time</u> " + Date.now().toString(),
@@ -284,7 +386,7 @@ function addControllerButtons(context) {
           }}
         >
           updatePostContentAction
-        </button>
+        </Button>
       );
       break;
     case "AppFeatureAiDocTopBar":
@@ -325,7 +427,7 @@ const ContextExplorerExample = () => {
   return (
     <div className="App">
       <textarea value={textareaContent} readOnly={true}/>
-      <div className="ControlPanel">{controllersDiv}</div>
+      <Flex direction={Flex.directions.COLUMN} className="ControlPanel">{controllersDiv}</Flex>
     </div>
   );
 };
