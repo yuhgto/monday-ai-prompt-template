@@ -6,7 +6,7 @@ import { Configuration, OpenAIApi } from 'openai'
 export const dynamic = 'force-static'
 
 // Set this to true if you're using localhost and having authentication issues
-const DISABLE_AUTH = false;
+const DISABLE_AUTH = true;
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
