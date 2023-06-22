@@ -1,17 +1,9 @@
-import dynamic from "next/dynamic";
 import React, { useContext } from "react";
 // import { ChatMessage, ChatRole } from "@mondaydotcomorg/react-hooks";
 import { useCallback, useEffect, useState } from "react";
 import mondaySdk from "monday-sdk-js";
 
 import { showErrorMessage, showSuccessMessage } from "@/helpers/monday-actions";
-
-const Dropdown = dynamic(
-  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
-  {
-    ssr: false,
-  }
-);
 
 import { useAiApi } from "@/hooks/useAiApi";
 import classes from "./prompt-layout.module.scss";
@@ -23,7 +15,12 @@ import SelectGroup from "@/components/select-group";
 
 // import { AppChatConfigService } from 'types';
 import { Modes } from "@/types/layout-modes";
-import {MondayApiResponse, MondayApiResponseSuccess, MondayApiResponseFailure, executeMondayApiCall} from "@/helpers/monday-api-helpers";
+import {
+  MondayApiResponse,
+  MondayApiResponseSuccess,
+  MondayApiResponseFailure,
+  executeMondayApiCall,
+} from "@/helpers/monday-api-helpers";
 import { AppContext } from "@/components/context-provider/app-context-provider";
 import { StringLiteral } from "typescript";
 import SelectColumn from "../select-column";
@@ -68,19 +65,19 @@ function getBoardColumns(board: number | number[]) {
 }
 
 function mapBoardColumnsToDropdownOptions(columns: Record<string, any>) {
-  return columns.data.boards[0].columns.reduce(
-    function reduceToTextColumns(
-      filtered: Record<string, any>[],
-      column: Record<string, any>
-    ) {
-      if (column.type === "text") {
-        filtered.push({
-          label: column.title,
-          value: column.id,
-        });
-      }
-      return filtered;
-    }, []);
+  return columns.data.boards[0].columns.reduce(function reduceToTextColumns(
+    filtered: Record<string, any>[],
+    column: Record<string, any>
+  ) {
+    if (column.type === "text") {
+      filtered.push({
+        label: column.title,
+        value: column.id,
+      });
+    }
+    return filtered;
+  },
+  []);
 }
 
 function getBoardGroups(boardId: number | number[]): Record<string, any> {
@@ -94,7 +91,7 @@ function getBoardGroups(boardId: number | number[]): Record<string, any> {
       return res;
     } else {
       console.error(res);
-      showErrorMessage('Could not load groups', 3000);
+      showErrorMessage("Could not load groups", 3000);
     }
   });
 }
@@ -122,7 +119,7 @@ const BasePromptLayout = ({ initialInput = "" }: Props): JSX.Element => {
 
   const sessionToken = context?.sessionToken ?? "";
 
-  const { loading, data, error, fetchData } = useAiApi('/', sessionToken);
+  const { loading, data, error, fetchData } = useAiApi("/", sessionToken);
 
   function handleColumnSelect(e: DropdownSelection) {
     setSelectedColumn(e?.value);
@@ -184,11 +181,14 @@ const BasePromptLayout = ({ initialInput = "" }: Props): JSX.Element => {
       }
 
       setMode(Modes.response);
-      const board = context?.iframeContext?.boardId ?? []; 
+      const board = context?.iframeContext?.boardId ?? [];
 
       // get board items, then send items to backend, then update board with response
 
-      const groupItems: MondayApiResponse = await getItemsFromGroup(selectedGroup, board);
+      const groupItems: MondayApiResponse = await getItemsFromGroup(
+        selectedGroup,
+        board
+      );
 
       if (!groupItems.is_success) {
         showErrorMessage("Could not retrieve items from board.", 3000);
@@ -201,13 +201,14 @@ const BasePromptLayout = ({ initialInput = "" }: Props): JSX.Element => {
         columnId: selectedColumn,
         items: groupItems.data.boards[0].groups[0].items,
         prompt: input,
-      })
+      });
 
       if (aiApiResponse.length === 0 || !aiApiResponse.length) {
         showErrorMessage("Selected group has no items.", 3000);
         return [];
       } else {
-        let itemUpdates = aiApiResponse.map(async (result: Record<string, any>) => {
+        let itemUpdates = aiApiResponse.map(
+          async (result: Record<string, any>) => {
             return await executeMondayApiCall(
               `mutation ($column:String!,$boardId:Int!, $itemId:Int!, $value:String!) {change_simple_column_value (column_id:$column, board_id:$boardId, item_id:$itemId, value:$value) {id }}`,
               {
@@ -219,10 +220,11 @@ const BasePromptLayout = ({ initialInput = "" }: Props): JSX.Element => {
                 },
               }
             );
-        });
+          }
+        );
         let success = await Promise.all(itemUpdates);
         if (success) {
-          console.log('promises:', success)
+          console.log("promises:", success);
           setMode(Modes.request);
           setSuccess(true);
           setTimeout(() => setSuccess(false), 5000);
@@ -234,9 +236,9 @@ const BasePromptLayout = ({ initialInput = "" }: Props): JSX.Element => {
 
   useEffect(() => {
     if (success) {
-      showSuccessMessage('Items were updated!', 3000)
+      showSuccessMessage("Items were updated!", 3000);
     }
-  })
+  });
 
   return (
     <div className={classes.main}>

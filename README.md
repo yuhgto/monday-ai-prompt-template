@@ -20,7 +20,6 @@ This sample demonstrates the following concepts:
 
 To connect this app to monday, follow the instructions in monday's technical docs: [AI Assistant Quickstart](https://developer.monday.com/apps/docs/quickstart-for-ai-assistant) 
 
-<b>Please make sure you provided all OAuth permissions</b> (in the App configuration at Monday Developers center).
 
 # Learn more
 
