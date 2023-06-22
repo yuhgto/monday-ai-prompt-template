@@ -6,16 +6,8 @@ import { MixedTags } from "@yaireo/tagify/dist/react.tagify";
 import { Send } from 'monday-ui-react-core/icons';
 import { useEffect, useState, useCallback } from "react";
 import { showErrorMessage } from "@/helpers/monday-actions";
-const IconButton = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.IconButton), {
-  ssr: false,
-})
-const Loader = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.Loader), {
-  ssr: false,
-})
+import { IconButton, Button, Loader } from "monday-ui-react-core"
+
 
 /**
  * Do not render this component until you have fetched the list of tags. 
@@ -128,8 +120,8 @@ const TextInputWithTagsAndSend = ({
       <IconButton
           ariaLabel="Send"
           className={classes.sendButton}
-          size={'small'}        
-          kind={'primary'}
+          size={'small'}
+          kind={Button.kinds.PRIMARY}
           icon={Send}
           onClick={handleOnSend}
           wrapperClassName={classes.sendButtonWrapper}

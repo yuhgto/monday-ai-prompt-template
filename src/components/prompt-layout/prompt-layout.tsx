@@ -5,13 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import mondaySdk from "monday-sdk-js";
 
 import { showErrorMessage, showSuccessMessage } from "@/helpers/monday-actions";
-
-const Dropdown = dynamic(
-  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
-  {
-    ssr: false,
-  }
-);
+import { Dropdown } from "monday-ui-react-core"
 
 import { useAiApi } from "@/hooks/useAiApi";
 import classes from "./prompt-layout.module.scss";

@@ -1,16 +1,6 @@
-import dynamic from 'next/dynamic';
 import React, { ChangeEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { IconButton, Button, Loader } from "monday-ui-react-core"
 
-const IconButton = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.IconButton), {
-  ssr: false,
-})
-const Loader = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.Loader), {
-  ssr: false,
-})
 import { Send } from 'monday-ui-react-core/icons';
 
 import classes from './text-input-with-send.module.scss';
@@ -138,7 +128,7 @@ const TextInputWithSend = ({
           ariaLabel="Send"
           className={classes.sendButton}
           size={'small'}        
-          kind={'primary'}
+          kind={Button.kinds.PRIMARY}
           icon={Send}
           onClick={handleOnSend}
           wrapperClassName={classes.sendButtonWrapper}
