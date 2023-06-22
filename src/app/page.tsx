@@ -1,15 +1,50 @@
 "use client"
 import {useCallback, useState, useMemo} from "react";
-import Image from 'next/image'
 import styles from './page.module.css'
 import { AppContextProvider } from '@/components/context-provider/app-context-provider';
-import BasePromptLayout from '@/examples/basic-prompt-layout/prompt-layout';
-import PromptWithColumnMapping from '@/examples/prompt-with-column-mapping/prompt-with-column-mapping';
-import LivestreamExampleFinal from '@/examples/livestream-example/final-code';
-import LivestreamExample from '@/examples/livestream-example/boilerplate';
-import AiAppFooter from '@/components/ai-footer/ai-footer';
-import ContextExplorerExample from '@/examples/context-explorer/context-explorer-example'
-import { Button } from "monday-ui-react-core";
+import dynamic from "next/dynamic";
+/// Using dynamic here provides a quick & dirty solution for some 3rd party libraries that are using the browser API's which are not exist on the backend
+const Button = dynamic(
+    () => import("monday-ui-react-core").then((mod) => mod.Button),
+    {
+        loading: () => <p>Loading...</p>,
+        ssr: false,
+    }
+);
+
+const BasePromptLayout = dynamic(
+    () => import('@/examples/basic-prompt-layout/prompt-layout'),
+    {
+        loading: () => <p>Loading...</p>,
+
+        ssr: false,
+    }
+);
+const LivestreamExampleFinal = dynamic(
+    () => import('@/examples/livestream-example/final-code'),
+    {
+        loading: () => <p>Loading...</p>,
+
+        ssr: false,
+    }
+);
+const LivestreamExample = dynamic(
+    () => import('@/examples/livestream-example/boilerplate'),
+    {
+        loading: () => <p>Loading...</p>,
+
+        ssr: false,
+    }
+);
+const ContextExplorerExample = dynamic(
+    () => import('@/examples/context-explorer/context-explorer-example'),
+    {
+        loading: () => <p>Loading...</p>,
+
+        ssr: false,
+    }
+);
+
 
 export default function Home() {
   const  [displayedApp, setAppToDisplay] = useState('');

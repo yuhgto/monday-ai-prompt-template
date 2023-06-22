@@ -1,12 +1,6 @@
 import { useState, useCallback, useContext, useMemo } from "react";
 import dynamic from "next/dynamic";
-
-const Dropdown = dynamic(
-  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
-  {
-    ssr: false,
-  }
-);
+import { Dropdown } from "monday-ui-react-core"
 
 import { AppContext } from "@/components/context-provider/app-context-provider";
 import TextInputWithTagsAndSend from "@/components/text-input-with-tags/text-input-with-tags";
