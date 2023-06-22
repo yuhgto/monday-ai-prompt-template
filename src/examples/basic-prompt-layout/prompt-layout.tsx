@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic";
 import React, { useContext, useMemo } from "react";
 // import { ChatMessage, ChatRole } from "@mondaydotcomorg/react-hooks";
 import { useCallback, useEffect, useState } from "react";

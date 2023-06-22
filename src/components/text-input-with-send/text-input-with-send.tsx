@@ -1,24 +1,35 @@
-import dynamic from 'next/dynamic';
-import React, { ChangeEvent, SyntheticEvent, useCallback, useEffect, useRef, useState } from 'react';
+import dynamic from "next/dynamic";
+import React, {
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-const IconButton = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.IconButton), {
-  ssr: false,
-})
-const Loader = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.Loader), {
-  ssr: false,
-})
-import { Send } from 'monday-ui-react-core/icons';
+const IconButton = dynamic(
+  () => import("monday-ui-react-core").then((mod) => mod.IconButton),
+  {
+    ssr: false,
+  }
+);
+const Loader = dynamic(
+  () => import("monday-ui-react-core").then((mod) => mod.Loader),
+  {
+    ssr: false,
+  }
+);
+import { Send } from "monday-ui-react-core/icons";
 
-import classes from './text-input-with-send.module.scss';
+import classes from "./text-input-with-send.module.scss";
 
-import { Modes } from '../../types/layout-modes';
-import { isEnterWithControlKey } from '../../helpers/dom-events';
+import { Modes } from "../../types/layout-modes";
+import { isEnterWithControlKey } from "../../helpers/dom-events";
 
-import {showErrorMessage} from '@/helpers/monday-actions'
+import { showErrorMessage } from "@/helpers/monday-actions";
+import { ButtonType } from "monday-ui-react-core/dist/types/components/Button/ButtonConstants";
+import { Button } from "monday-ui-react-core";
 
 const ERROR_TIMEOUT = 3000;
 
@@ -47,7 +58,7 @@ const TextInputWithSend = ({
   mode,
   setMode,
   onSend,
-  initialInputValue = '',
+  initialInputValue = "",
   loading,
   success,
 }: Props): JSX.Element => {
@@ -64,7 +75,10 @@ const TextInputWithSend = ({
       return;
     }
     textAreaElement.focus();
-    textAreaElement.setSelectionRange(textAreaElement.value.length, textAreaElement.value.length);
+    textAreaElement.setSelectionRange(
+      textAreaElement.value.length,
+      textAreaElement.value.length
+    );
   }, []);
 
   // BUG: make input become smaller when user deletes content
@@ -76,15 +90,15 @@ const TextInputWithSend = ({
   useEffect(() => {
     handleInputChange(inputValue);
     focusInputContent();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    handleInputChange(event.currentTarget.value ?? '');
+    handleInputChange(event.currentTarget.value ?? "");
   };
 
   const resetInput = useCallback(() => {
-    setInputValue('');
+    setInputValue("");
     setInputElHeight(undefined);
   }, [setInputValue, setInputElHeight]);
 
@@ -107,7 +121,7 @@ const TextInputWithSend = ({
 
   useEffect(() => {
     if (error && mode === Modes.response) {
-      console.error('err:', error);
+      console.error("err:", error);
       showErrorMessage(`Something went wrong: ${error}`, ERROR_TIMEOUT);
       setMode(Modes.request);
     }
@@ -117,7 +131,7 @@ const TextInputWithSend = ({
     if (success) {
       resetInput();
     }
-  }, [success, resetInput])
+  }, [success, resetInput]);
 
   return (
     <div className={classes.inputContainer}>
@@ -125,25 +139,25 @@ const TextInputWithSend = ({
         className={classes.input}
         rows={1}
         ref={content}
-        placeholder={'Write your prompt here...'}
+        placeholder={"Write your prompt here..."}
         value={inputValue}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        style={{ height: inputElHeight ? `${inputElHeight}px` : 'auto' }}
+        style={{ height: inputElHeight ? `${inputElHeight}px` : "auto" }}
       />
       <div className={classes.loaderContainer}>
-      {(mode===Modes.response) ? <Loader size={24}/> : null}
+        {mode === Modes.response ? <Loader size={24} /> : null}
       </div>
-        <IconButton
-          ariaLabel="Send"
-          className={classes.sendButton}
-          size={'small'}        
-          kind={'primary'}
-          icon={Send}
-          onClick={handleOnSend}
-          wrapperClassName={classes.sendButtonWrapper}
-          disabled={!canSendInput}
-        />
+      <IconButton
+        ariaLabel="Send"
+        className={classes.sendButton}
+        size={"small"}
+        kind={Button.kinds?.PRIMARY}
+        icon={Send}
+        onClick={handleOnSend}
+        wrapperClassName={classes.sendButtonWrapper}
+        disabled={!canSendInput}
+      />
     </div>
   );
 };

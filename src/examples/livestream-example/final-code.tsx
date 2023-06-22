@@ -1,35 +1,29 @@
-import { useState, useCallback, useContext, useMemo } from "react";
-import dynamic from "next/dynamic";
-
-const Dropdown = dynamic(
-  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
-  {
-    ssr: false,
-  }
-);
+import { useState, useCallback, useContext } from "react";
 
 import { AppContext } from "@/components/context-provider/app-context-provider";
 import TextInputWithTagsAndSend from "@/components/text-input-with-tags/text-input-with-tags";
 import AiAppFooter from "@/components/ai-footer/ai-footer";
-import SelectColumn from "@/components/select-column";
-import { useAiApi, PromptsApiPayloadType } from "@/hooks/useAiApi";
-import useBoardColumns, { mapBoardColumnsToDropdownOptions, mapBoardColumnsToTagsOptions } from "@/hooks/useBoardColumns";
+import { useAiApi } from "@/hooks/useAiApi";
+import useBoardColumns, {
+  mapBoardColumnsToDropdownOptions,
+  mapBoardColumnsToTagsOptions,
+} from "@/hooks/useBoardColumns";
 import { useSuccessMessage } from "@/hooks/useSuccessMessage";
 import classes from "@/examples/livestream-example/styles.module.scss";
-import {
-  executeMondayApiCall
-} from "@/helpers/monday-api-helpers";
+import { executeMondayApiCall } from "@/helpers/monday-api-helpers";
 import { Modes } from "@/types/layout-modes";
 
 import { showErrorMessage } from "@/helpers/monday-actions";
 import { replaceTagsWithColumnValues } from "@/helpers/tags-helpers";
-import useBoardGroups, {mapBoardGroupsToDropdownOptions} from "@/hooks/useBoardGroups";
+import useBoardGroups, {
+  mapBoardGroupsToDropdownOptions,
+} from "@/hooks/useBoardGroups";
 import SelectGroup from "@/components/select-group";
+import { Dropdown } from "monday-ui-react-core";
 
 type Props = {
   initialInput?: string;
 };
-
 
 type DropdownSelection = {
   id: string;
@@ -39,32 +33,36 @@ type DropdownSelection = {
 // @ts-ignore
 async function getItemsAndColumnValues(selectedGroup, context, columnIds) {
   return await executeMondayApiCall(
-  `query ($boardId:[Int], $columnIds:[String], $groupId: [String]) { boards (ids:$boardId) { groups(ids:$groupId) { items { id column_values (ids:$columnIds) { text id } } } } }`,
-  {
-    variables: {
-      columnIds,
-      boardId: context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [],
-      groupId: selectedGroup,
-    },
-  }
-);}
+    `query ($boardId:[Int], $columnIds:[String], $groupId: [String]) { boards (ids:$boardId) { groups(ids:$groupId) { items { id column_values (ids:$columnIds) { text id } } } } }`,
+    {
+      variables: {
+        columnIds,
+        boardId:
+          context?.iframeContext?.boardId ??
+          context?.iframeContext?.boardIds ??
+          [],
+        groupId: selectedGroup,
+      },
+    }
+  );
+}
 
 function getColumnIdsFromInputTags(input: string) {
   const findTaggedColumnsRegex = new RegExp("\\[\\[.*?\\]\\]", "g");
-    const taggedColumns = [...input.matchAll(findTaggedColumnsRegex)].map(
-      (match) => {
-        const data = JSON.parse(match[0])[0][0];
-        const index = match.index;
-        const { length } = match[0];
-        const columnId = data.id;
-        const columnTitle = data.value;
-        return { columnId, columnTitle, length, index };
-      }
-    );
-    var itemColumnValuesFromMonday;
+  const taggedColumns = [...input.matchAll(findTaggedColumnsRegex)].map(
+    (match) => {
+      const data = JSON.parse(match[0])[0][0];
+      const index = match.index;
+      const { length } = match[0];
+      const columnId = data.id;
+      const columnTitle = data.value;
+      return { columnId, columnTitle, length, index };
+    }
+  );
+  var itemColumnValuesFromMonday;
 
-    // get values of that column
-    return taggedColumns.map((col) => col.columnId);
+  // get values of that column
+  return taggedColumns.map((col) => col.columnId);
 }
 
 const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
@@ -75,18 +73,21 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
   const sessionToken = context?.sessionToken ?? "";
 
   const aiApiStatus = useAiApi("/openai/prompts", sessionToken);
-  
+
   const [outputColumn, setOutputColumn] = useState<any>();
   const [selectedGroup, setSelectedGroup] = useState<string>();
-  
+
   const boardColumns = useBoardColumns(context);
-  const boardColumnsForTagsComponent = mapBoardColumnsToTagsOptions(boardColumns);
-  const boardColumnsForDropdownComponent = mapBoardColumnsToDropdownOptions(boardColumns);
+  const boardColumnsForTagsComponent =
+    mapBoardColumnsToTagsOptions(boardColumns);
+  const boardColumnsForDropdownComponent =
+    mapBoardColumnsToDropdownOptions(boardColumns);
   const canRenderInput = !!boardColumnsForTagsComponent;
 
   const boardGroups = useBoardGroups(context);
-  const boardGroupsForDropdownComponent = mapBoardGroupsToDropdownOptions(boardGroups) ?? [];
-  
+  const boardGroupsForDropdownComponent =
+    mapBoardGroupsToDropdownOptions(boardGroups) ?? [];
+
   const [success, setSuccess] = useState<boolean>(false);
   const loading = aiApiStatus.loading || mode == Modes.response;
   const error = aiApiStatus.error;
@@ -94,8 +95,8 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
 
   console.log(context);
   function handleColumnSelect(e: DropdownSelection) {
-      setOutputColumn(e?.value);
-    }
+    setOutputColumn(e?.value);
+  }
 
   function handleGroupSelect(e: DropdownSelection) {
     setSelectedGroup(e?.value);
@@ -108,15 +109,22 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
 
       const columnIds = getColumnIdsFromInputTags(input);
 
-      var itemColumnValuesFromMonday = await getItemsAndColumnValues(selectedGroup, context, columnIds);
-      
+      var itemColumnValuesFromMonday = await getItemsAndColumnValues(
+        selectedGroup,
+        context,
+        columnIds
+      );
+
       if (itemColumnValuesFromMonday.is_success) {
-        const { items } = itemColumnValuesFromMonday.data.boards[0].groups[0]
+        const { items } = itemColumnValuesFromMonday.data.boards[0].groups[0];
         var prompts: string[] = items.map((item: any) => {
-            return replaceTagsWithColumnValues(input, item.column_values);
-            // return input
-          });
-        var itemIdsList: {id:string}[] = itemColumnValuesFromMonday?.data.boards[0].groups[0].items.map((x: any) => x.id)
+          return replaceTagsWithColumnValues(input, item.column_values);
+          // return input
+        });
+        var itemIdsList: { id: string }[] =
+          itemColumnValuesFromMonday?.data.boards[0].groups[0].items.map(
+            (x: any) => x.id
+          );
       } else {
         showErrorMessage("Failed getting column values from monday", 3000);
         setMode(Modes.request);
@@ -126,7 +134,7 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
       const aiApiResponse = await aiApiStatus.fetchData({
         prompts: prompts, // or promptsWithColumnValues,
         items: itemIdsList,
-        n: 1, // or itemsFromMonday.length 
+        n: 1, // or itemsFromMonday.length
       });
 
       if (aiApiResponse.length === 0 || error) {
@@ -135,13 +143,16 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
       } else {
         // update items on board
         let itemUpdates = aiApiResponse.map(
-          async (result: {item:string, result:string}) => {
+          async (result: { item: string; result: string }) => {
             return await executeMondayApiCall(
               `mutation ($column:String!,$boardId:Int!, $itemId:Int!, $value:String!) {change_simple_column_value (column_id:$column, board_id:$boardId, item_id:$itemId, value:$value) {id }}`,
               {
                 variables: {
                   column: outputColumn,
-                  boardId: context?.iframeContext?.boardId ?? context?.iframeContext?.boardIds ?? [],
+                  boardId:
+                    context?.iframeContext?.boardId ??
+                    context?.iframeContext?.boardIds ??
+                    [],
                   itemId: parseInt(result.item),
                   value: result.result,
                 },
@@ -159,7 +170,7 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
 
   return (
     <div className={classes.main}>
-        <div className={classes.dropdownContainer}>
+      <div className={classes.dropdownContainer}>
         <Dropdown
           options={boardGroupsForDropdownComponent}
           onChange={handleGroupSelect}
@@ -171,8 +182,8 @@ const LivestreamExampleFinal = ({ initialInput = "" }: Props): JSX.Element => {
           onChange={handleColumnSelect}
           placeholder={"Select an output column"}
           size="small"
-          />
-        </div>
+        />
+      </div>
       {canRenderInput && (
         <TextInputWithTagsAndSend
           className={classes.inputContainer}

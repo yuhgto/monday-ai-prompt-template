@@ -17,7 +17,7 @@ const openai = new OpenAIApi(configuration);
 
 function isAuthorized(request: NextRequest) {
   try {
-    const authorizationToken: string  = request?.headers.get('Authorization') ?? '';
+    const authorizationToken: string  = request?.headers?.get('Authorization') ?? '';
     const clientSecret: string = process.env.CLIENT_SECRET ?? '';
     console.log('client-secret', clientSecret);
     console.log('authorizationToken', authorizationToken);
