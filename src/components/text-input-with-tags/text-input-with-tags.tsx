@@ -1,28 +1,32 @@
-import { Modes } from "@/types/layout-modes"
+import { Modes } from "@/types/layout-modes";
 import dynamic from "next/dynamic";
-import classes from "@/components/text-input-with-tags/text-input-with-tags.module.scss"
-import "@yaireo/tagify/dist/tagify.css" // Tagify CSS
+import classes from "@/components/text-input-with-tags/text-input-with-tags.module.scss";
+import "@yaireo/tagify/dist/tagify.css"; // Tagify CSS
 import { MixedTags } from "@yaireo/tagify/dist/react.tagify";
-import { Send } from 'monday-ui-react-core/icons';
+import { Send } from "monday-ui-react-core/icons";
 import { useEffect, useState, useCallback } from "react";
 import { showErrorMessage } from "@/helpers/monday-actions";
-const IconButton = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.IconButton), {
-  ssr: false,
-})
-const Loader = dynamic(() => 
-  import('monday-ui-react-core')
-    .then((mod) => mod.Loader), {
-  ssr: false,
-})
+import { Button } from "monday-ui-react-core";
+const IconButton = dynamic(
+  () => import("monday-ui-react-core").then((mod) => mod.IconButton),
+  {
+    ssr: false,
+  }
+);
+const Loader = dynamic(
+  () => import("monday-ui-react-core").then((mod) => mod.Loader),
+  {
+    ssr: false,
+  }
+);
 
 /**
- * Do not render this component until you have fetched the list of tags. 
+ * Do not render this component until you have fetched the list of tags.
  * The validTags property CANNOT BE UPDATED after initial render
  */
-type Props = { //TODO: move component types into its own file
-  onInvalidTag?(e:any): void;
+type Props = {
+  //TODO: move component types into its own file
+  onInvalidTag?(e: any): void;
   validTags: {
     id: string;
     value: string;
@@ -35,14 +39,14 @@ type Props = { //TODO: move component types into its own file
   success: boolean;
   error?: string;
   className?: string;
-}
+};
 
 type TagifyDropDownPosition = "manual" | "text" | "input" | "all";
 
 /**
  * This component does not support CMD+Enter to send the message
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 
 const TextInputWithTagsAndSend = ({
@@ -52,10 +56,10 @@ const TextInputWithTagsAndSend = ({
   onSend,
   mode,
   setMode,
-  loading, 
+  loading,
   success,
   error,
-  className
+  className,
 }: Props): JSX.Element => {
   const [canRenderInput, setCanRenderInput] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(initialInput);
@@ -72,11 +76,11 @@ const TextInputWithTagsAndSend = ({
     if (validTags.length > 0) {
       setCanRenderInput(true);
     }
-  }, [validTags])
+  }, [validTags]);
 
   useEffect(() => {
     if (error && mode === Modes.response) {
-      console.error('err:', error);
+      console.error("err:", error);
       showErrorMessage(`Something went wrong: ${error}`, 3000);
       setMode(Modes.request);
     }
@@ -84,7 +88,7 @@ const TextInputWithTagsAndSend = ({
 
   const handleOnSend = () => {
     if (canSendInput) {
-      onSend(inputValue)
+      onSend(inputValue);
     }
   };
 
@@ -93,51 +97,50 @@ const TextInputWithTagsAndSend = ({
     dropdown: {
       enabled: 1,
       position: "text" as TagifyDropDownPosition,
-      searchBy: ['title'],
+      searchBy: ["title"],
       maxItems: 5,
     },
     enforceWhitelist: true,
-    editTags: false as false, // this property is typed as 'false' 
-  }
+    editTags: false as false, // this property is typed as 'false'
+  };
 
-  const handleChange = useCallback((e:{detail:any}) => {
-    console.log('onchange event', e);
+  const handleChange = useCallback((e: { detail: any }) => {
+    console.log("onchange event", e);
     const input = e.detail.value;
     setInputValue(input);
-  }, [])
-
-  
+  }, []);
 
   return (
     <div className={className}>
-    <div className={classes.inputContainer}>
-      <div className={classes.tagsContainer}>
-      {canRenderInput && 
-      <MixedTags 
-      className={classes.input}
-      // @ts-ignore
-        settings={{whitelist: validTags, ...DEFAULT_SETTINGS}} 
-        onChange={handleChange}
-        onInvalid={onInvalidTag}
-        defaultValue={initialInput}
-      />}
-      </div>
-      <div className={classes.loaderContainer}>
-      {(mode===Modes.response) ? <Loader size={24}/> : null}
-      </div>
-      <IconButton
+      <div className={classes.inputContainer}>
+        <div className={classes.tagsContainer}>
+          {canRenderInput && (
+            <MixedTags
+              className={classes.input}
+              // @ts-ignore
+              settings={{ whitelist: validTags, ...DEFAULT_SETTINGS }}
+              onChange={handleChange}
+              onInvalid={onInvalidTag}
+              defaultValue={initialInput}
+            />
+          )}
+        </div>
+        <div className={classes.loaderContainer}>
+          {mode === Modes.response ? <Loader size={24} /> : null}
+        </div>
+        <IconButton
           ariaLabel="Send"
           className={classes.sendButton}
-          size={'small'}        
-          kind={'primary'}
+          size={"small"}
+          kind={Button.kinds?.PRIMARY}
           icon={Send}
           onClick={handleOnSend}
           wrapperClassName={classes.sendButtonWrapper}
           disabled={!canSendInput}
         />
+      </div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
 export default TextInputWithTagsAndSend;

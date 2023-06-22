@@ -1,11 +1,5 @@
-import dynamic from "next/dynamic";
+import { Dropdown } from "monday-ui-react-core";
 
-const Dropdown = dynamic(
-  () => import("monday-ui-react-core").then((mod) => mod.Dropdown),
-  {
-    ssr: false,
-  }
-);
 
 type DropdownSelection = {
   id: string;
