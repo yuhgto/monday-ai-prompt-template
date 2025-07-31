@@ -4,6 +4,8 @@ This is a template app to help developers get started building for the monday AI
 
 If you're having problems, there are some common troubleshooting steps at the bottom of the page. 
 
+> **Disclaimer: This code is an example only and not covered by monday app support or SLAs.**
+
 # About the app
 
 This is an example app with three basic apps inside it. It updates data on a monday board from output from GPT3. 
